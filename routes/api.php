@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ShoppingListController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\ShoppingListItemController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,4 +24,5 @@ Route::group(['prefix' => 'auth'], function () {
 });
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('shopping_lists', ShoppingListController::class)->except(['edit', 'create']);
+    Route::resource('shopping_lists.items', ShoppingListItemController::class)->except(['edit', 'create', 'show']);
 });

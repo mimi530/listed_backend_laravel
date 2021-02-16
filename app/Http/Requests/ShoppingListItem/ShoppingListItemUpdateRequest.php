@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\ShoppingList;
+namespace App\Http\Requests\ShoppingListItem;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ShoppingListUpdateRequest extends FormRequest
+class ShoppingListItemUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class ShoppingListUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('update', $this->route('shopping_list'));
+        return false;
     }
 
     /**
@@ -24,9 +24,7 @@ class ShoppingListUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'email' => 'email',
-            'bought' => 'boolean',
+            //
         ];
     }
 }

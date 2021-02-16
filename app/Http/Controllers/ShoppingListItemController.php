@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ShoppingList\ShoppingListUpdateRequest;
+use App\Http\Requests\ShoppingListItem\ShoppingListItemStoreRequest;
+use App\Models\ShoppingList;
 use App\Models\ShoppingListItem;
-use Illuminate\Http\Request;
 
 class ShoppingListItemController extends Controller
 {
@@ -12,19 +14,10 @@ class ShoppingListItemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(ShoppingList $shoppingList)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $this->authorize('viewAny', [ShoppingListItem::class, $shoppingList]);
+        return response()->json($shoppingList->shoppingListItems()->with('user')->get()->groupBy('user_id'));
     }
 
     /**
@@ -33,31 +26,15 @@ class ShoppingListItemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ShoppingListItemStoreRequest $request, ShoppingList $shoppingList)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\ShoppingListItem  $shoppingListItem
-     * @return \Illuminate\Http\Response
-     */
-    public function show(ShoppingListItem $shoppingListItem)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ShoppingListItem  $shoppingListItem
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ShoppingListItem $shoppingListItem)
-    {
-        //
+        $shoppingList->shoppingListItems()->create(
+            array_merge(
+                ['user_id' => auth()->user()->id],
+                $request->validated()
+            )
+        );
+        return response()->json('', 200);
     }
 
     /**
@@ -67,9 +44,10 @@ class ShoppingListItemController extends Controller
      * @param  \App\Models\ShoppingListItem  $shoppingListItem
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ShoppingListItem $shoppingListItem)
+    public function update(ShoppingListUpdateRequest $request, ShoppingListItem $item)
     {
-        //
+        $item->update($request->validated());
+        return response()->json('Przedmiot zaktualizowany', 200);
     }
 
     /**
@@ -78,8 +56,10 @@ class ShoppingListItemController extends Controller
      * @param  \App\Models\ShoppingListItem  $shoppingListItem
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ShoppingListItem $shoppingListItem)
+    public function destroy(ShoppingListItem $item)
     {
-        //
+        $this->authorize('delete', ShoppingListItem::class);
+        $item->delete();
+        return response()->json('Przedmiot usunięty', 200);
     }
 }
