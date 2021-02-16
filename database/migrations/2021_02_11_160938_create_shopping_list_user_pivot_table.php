@@ -16,8 +16,8 @@ class CreateShoppingListUserPivotTable extends Migration
         Schema::create('shopping_list_user', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('shopping_list_id')->constrained();
-            $table->boolean('owner')->nullable();
+            $table->foreignId('shopping_list_id')->constrained()->onDelete('cascade');
+            $table->boolean('owner')->default(false);
             $table->timestamps();
         });
     }

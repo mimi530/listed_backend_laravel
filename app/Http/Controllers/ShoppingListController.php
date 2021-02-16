@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ShoppingList\ShoppingListIndexRequest;
+use App\Http\Requests\ShoppingList\ShoppingListStoreRequest;
+use App\Http\Requests\ShoppingList\ShoppingListUpdateRequest;
 use App\Models\ShoppingList;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class ShoppingListController extends Controller
 {
@@ -14,21 +14,24 @@ class ShoppingListController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ShoppingListIndexRequest $request)
+    public function index()
     {
         return response()->json(auth()->user()->shoppingLists);
     }
 
-
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\ShoppingListStoreRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ShoppingListStoreRequest $request)
     {
-        //
+        $shoppingList = auth()->user()->shoppingLists()->create(
+            $request->validated(), 
+            ['owner' => true]
+        );
+        return response()->json($shoppingList, 201);
     }
 
     /**
@@ -39,19 +42,29 @@ class ShoppingListController extends Controller
      */
     public function show(ShoppingList $shoppingList)
     {
-        return response()->json($shoppingList->with('shoppingListItems'));
+        $this->authorize('view', $shoppingList);
+        return response()->json($shoppingList);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\ShoppingListUpdateRequest  $request
      * @param  \App\Models\ShoppingList  $shoppingList
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ShoppingList $shoppingList)
+    public function update(ShoppingListUpdateRequest $request, ShoppingList $shoppingList)
     {
-        //
+        if(!$request->email) {
+            //updating only the name value on the list
+            $shoppingList->update($request->validated());
+            return response()->json($shoppingList, 200);
+        } else {
+            //update by attaching new user to the list
+            $user = User::where('email', $request->email)->firstOrfail();
+            $user->shoppingLists()->sync($shoppingList);
+            return response()->json('Użytkownik dopisany do listy', 200);
+        }
     }
 
     /**
@@ -62,6 +75,8 @@ class ShoppingListController extends Controller
      */
     public function destroy(ShoppingList $shoppingList)
     {
-        //
+        $this->authorize('delete', $shoppingList);
+        $shoppingList->delete();
+        return response()->json('Lista usunięta', 200);
     }
 }
