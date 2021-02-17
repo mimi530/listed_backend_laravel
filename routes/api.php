@@ -23,6 +23,6 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('me', [AuthController::class, 'me']);
 });
 Route::group(['middleware' => 'auth'], function () {
-    Route::resource('shopping_lists', ShoppingListController::class)->except(['edit', 'create']);
-    Route::resource('shopping_lists.items', ShoppingListItemController::class)->except(['edit', 'create', 'show']);
+    Route::resource('lists', ShoppingListController::class)->except(['edit', 'create']);
+    Route::resource('lists.items', ShoppingListItemController::class)->only(['store', 'update', 'destroy']);
 });

@@ -17,9 +17,9 @@ class ShoppingListItemPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function viewAny(User $user, ShoppingList $shoppingList)
+    public function viewAny(User $user, ShoppingList $list)
     {
-        return $shoppingList->users->contains($user);
+        return $list->users->contains($user);
     }
 
     /**
@@ -28,32 +28,32 @@ class ShoppingListItemPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create(User $user, ShoppingList $shoppingList)
+    public function create(User $user, ShoppingList $list)
     {
-        return $shoppingList->users->contains($user);
+        return $list->users->contains($user);
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ShoppingListItem  $shoppingListItem
+     * @param  \App\Models\ShoppingListItem  $item
      * @return mixed
      */
-    public function update(User $user, ShoppingListItem $shoppingListItem)
+    public function update(User $user, ShoppingListItem $item)
     {
-        return $shoppingListItem->user()->id === $user->id;
+        return $item->user()->id === $user->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ShoppingListItem  $shoppingListItem
+     * @param  \App\Models\ShoppingListItem  $item
      * @return mixed
      */
-    public function delete(User $user, ShoppingListItem $shoppingListItem)
+    public function delete(User $user, ShoppingListItem $item)
     {
-        return $shoppingListItem->user()->id === $user->id;
+        return $item->user()->id === $user->id;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ShoppingList\ShoppingListStoreRequest;
 use App\Http\Requests\ShoppingList\ShoppingListUpdateRequest;
 use App\Models\ShoppingList;
+use App\Models\ShoppingListItem;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,13 @@ class ShoppingListController extends Controller
      */
     public function index()
     {
-        return response()->json(auth()->user()->shoppingLists()->with('users')->get());
+        $lists =  auth()->user()->shoppingLists();
+        return response()->json(
+            $lists
+            ->withCount('shoppingListItems')
+            ->withCount('itemsBought')
+            ->get()
+        );
     }
 
     /**
@@ -28,25 +35,25 @@ class ShoppingListController extends Controller
      */
     public function store(ShoppingListStoreRequest $request)
     {
-        $shoppingList = auth()->user()->shoppingLists()->create(
-            $request->validated(), 
-            ['owner' => true]
-        );
-        return response()->json($shoppingList, 201);
+        auth()->user()->shoppingLists()->create( $request->validated(), ['owner' => true] );
+        return response()->json([
+            'message' => 'Lista utworzona' 
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ShoppingList  $shoppingList
+     * @param  \App\Models\ShoppingList  $list
      * @return \Illuminate\Http\Response
      */
-    public function show(ShoppingList $shoppingList)
-    {
-        $this->authorize('view', $shoppingList);
+    public function show(ShoppingList $list)
+    {;
+        $this->authorize('view', $list);
         return response()->json([
-            $shoppingList, 
-            'items' => $shoppingList->shoppingListItems()->count()
+            'users_count' => $list->usersCount(),
+            'list' => $list->load('users:id,name'),
+            'items' => $list->shoppingListItems()->with('user:id,name')->get()
         ]);
     }
 
@@ -54,19 +61,19 @@ class ShoppingListController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\ShoppingListUpdateRequest  $request
-     * @param  \App\Models\ShoppingList  $shoppingList
+     * @param  \App\Models\ShoppingList  $list
      * @return \Illuminate\Http\Response
      */
-    public function update(ShoppingListUpdateRequest $request, ShoppingList $shoppingList)
+    public function update(ShoppingListUpdateRequest $request, ShoppingList $list)
     {
         if(!$request->email) {
             //updating only the name value on the list
-            $shoppingList->update($request->validated());
-            return response()->json($shoppingList, 200);
+            $list->update($request->validated());
+            return response()->json('Lista zaktualizowana', 200);
         } else {
             //update by attaching new user to the list
             $user = User::where('email', $request->email)->firstOrfail();
-            $user->shoppingLists()->sync($shoppingList);
+            $user->shoppingLists()->sync($list);
             return response()->json('Użytkownik dopisany do listy', 200);
         }
     }
@@ -74,20 +81,20 @@ class ShoppingListController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ShoppingList  $shoppingList
+     * @param  \App\Models\ShoppingList  $list
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, ShoppingList $shoppingList)
+    public function destroy(Request $request, ShoppingList $list)
     {
         if(!$request->user_id) {
             //owner deletes the list
-            $this->authorize('delete', $shoppingList);
-            $shoppingList->delete();
+            $this->authorize('delete', $list);
+            $list->delete();
             return response()->json('Lista usunięta', 200);
         } else {
             //detach a user from a list
             $user = User::findOrfail($request->user_id);
-            $user->shoppingLists()->detach($shoppingList);
+            $user->shoppingLists()->detach($list);
             return response()->json('Lista została opuszczona', 200);
         }
     }

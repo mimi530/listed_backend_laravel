@@ -14,7 +14,7 @@ class ShoppingListItemStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('create', [ShoppingListItem::class, $this->route('shopping_list')]);
+        return $this->user()->can('create', [ShoppingListItem::class, $this->route('list')]);
     }
 
     /**

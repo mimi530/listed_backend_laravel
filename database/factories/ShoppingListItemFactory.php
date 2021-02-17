@@ -24,9 +24,7 @@ class ShoppingListItemFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name,
-            'user_id' => User::factory(),
-            'shopping_list_id' => ShoppingList::factory(),
+            'name' => $this->faker->word,
             'description' => $this->faker->sentence(),
             'bought' => $this->faker->randomElement([true, false])
         ];

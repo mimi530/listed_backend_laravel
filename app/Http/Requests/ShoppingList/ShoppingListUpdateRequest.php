@@ -13,7 +13,7 @@ class ShoppingListUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('update', $this->route('shopping_list'));
+        return $this->user()->can('update', $this->route('list'));
     }
 
     /**
