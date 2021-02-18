@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ShoppingList\ShoppingListStoreRequest;
 use App\Http\Requests\ShoppingList\ShoppingListUpdateRequest;
 use App\Models\ShoppingList;
-use App\Models\ShoppingListItem;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class ShoppingListController extends Controller
 {
@@ -37,7 +35,7 @@ class ShoppingListController extends Controller
     {
         auth()->user()->shoppingLists()->create( $request->validated(), ['owner' => true] );
         return response()->json([
-            'message' => 'Lista utworzona' 
+            'message' => trans('responses.ok.list.saved')
         ], 201);
     }
 
@@ -66,15 +64,17 @@ class ShoppingListController extends Controller
      */
     public function update(ShoppingListUpdateRequest $request, ShoppingList $list)
     {
-        if(!$request->email) {
-            //updating only the name value on the list
+        if(!$request->email) { //updating only the name value on the list
             $list->update($request->validated());
-            return response()->json('Lista zaktualizowana', 200);
-        } else {
-            //update by attaching new user to the list
+            return response()->json([
+                'message' => trans('responses.ok.list.updated')
+            ], 200);
+        } else { //update by attaching new user to the list
             $user = User::where('email', $request->email)->firstOrfail();
             $user->shoppingLists()->sync($list);
-            return response()->json('Użytkownik dopisany do listy', 200);
+            return response()->json([
+                'message' => trans('responses.ok.list.user_added')
+            ], 200);
         }
     }
 
@@ -84,18 +84,20 @@ class ShoppingListController extends Controller
      * @param  \App\Models\ShoppingList  $list
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, ShoppingList $list)
+    public function destroy(ShoppingList $list)
     {
-        if(!$request->user_id) {
-            //owner deletes the list
-            $this->authorize('delete', $list);
+        $this->authorize('delete', $list);
+        $user = auth()->user();
+        if($list->owner->first()->id = $user->id) { //owner deletes the list
             $list->delete();
-            return response()->json('Lista usunięta', 200);
-        } else {
-            //detach a user from a list
-            $user = User::findOrfail($request->user_id);
+            return response()->json([
+                'message' => trans('responses.ok.list.deleted')
+            ], 200);
+        } else { //non-owner leaves the list
             $user->shoppingLists()->detach($list);
-            return response()->json('Lista została opuszczona', 200);
+            return response()->json([
+                'message' => trans('responses.ok.list.left')
+            ], 200);
         }
     }
 }

@@ -25,8 +25,7 @@ class ShoppingListUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => 'email',
-            'bought' => 'boolean',
+            'email' => 'email'
         ];
     }
 }

@@ -13,7 +13,7 @@ class ShoppingListItemUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return $this->user()->can('update', [ShoppingListItem::class, $this->route('list')]);
     }
 
     /**
@@ -24,7 +24,9 @@ class ShoppingListItemUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required',
+            'description' => '',
+            'bought' => 'boolean',
         ];
     }
 }

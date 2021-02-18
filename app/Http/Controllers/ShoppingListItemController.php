@@ -24,7 +24,7 @@ class ShoppingListItemController extends Controller
             )
         );
         return response()->json([
-            'message' => 'Przedmiot utworzony' 
+            'message' => trans('responses.ok.item.saved')
         ], 201);
     }
 
@@ -35,10 +35,12 @@ class ShoppingListItemController extends Controller
      * @param  \App\Models\ShoppingListItem  $item
      * @return \Illuminate\Http\Response
      */
-    public function update(ShoppingListUpdateRequest $request, ShoppingListItem $item)
+    public function update(ShoppingListUpdateRequest $request, ShoppingList $list, ShoppingListItem $item)
     {
         $item->update($request->validated());
-        return response()->json('Przedmiot zaktualizowany', 200);
+        return response()->json([
+            'message' => trans('responses.ok.item.updated')
+        ], 200);
     }
 
     /**
@@ -47,10 +49,12 @@ class ShoppingListItemController extends Controller
      * @param  \App\Models\ShoppingListItem  $item
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ShoppingListItem $item)
+    public function destroy(ShoppingList $list, ShoppingListItem $item)
     {
-        $this->authorize('delete', ShoppingListItem::class);
+        $this->authorize('delete', $item);
         $item->delete();
-        return response()->json('Przedmiot usunięty', 200);
+        return response()->json([
+            'message' => trans('responses.ok.item.deleted')
+        ], 200);
     }
 }

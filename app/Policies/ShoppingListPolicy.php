@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\ShoppingList;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class ShoppingListPolicy
 {
@@ -19,7 +20,9 @@ class ShoppingListPolicy
      */
     public function view(User $user, ShoppingList $list)
     {
-        return $list->users->contains($user);
+        return $list->users->contains($user)
+            ? Response::allow()
+            : Response::deny(trans('responses.error.list.belong'));
     }
 
     /**
@@ -31,7 +34,9 @@ class ShoppingListPolicy
      */
     public function update(User $user, ShoppingList $list)
     {
-        return $user->id === $list->owner->first()->id;
+        return $user->id === $list->owner->first()->id
+            ? Response::allow()
+            : Response::deny(trans('responses.error.list.owner'));
     }
 
     /**
@@ -43,6 +48,8 @@ class ShoppingListPolicy
      */
     public function delete(User $user, ShoppingList $list)
     {
-        return $user->id === $list->owner->first()->id;
+        return $user->id === $list->owner->first()->id
+            ? Response::allow()
+            : Response::deny(trans('responses.error.list.owner'));
     }
 }

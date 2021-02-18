@@ -6,21 +6,11 @@ use App\Models\ShoppingList;
 use App\Models\ShoppingListItem;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class ShoppingListItemPolicy
 {
     use HandlesAuthorization;
-
-    /**
-     * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function viewAny(User $user, ShoppingList $list)
-    {
-        return $list->users->contains($user);
-    }
 
     /**
      * Determine whether the user can create models.
@@ -30,7 +20,9 @@ class ShoppingListItemPolicy
      */
     public function create(User $user, ShoppingList $list)
     {
-        return $list->users->contains($user);
+        return $list->users->contains($user)
+            ? Response::allow()
+            : Response::deny(trans('responses.error.list.belong'));
     }
 
     /**
@@ -42,7 +34,9 @@ class ShoppingListItemPolicy
      */
     public function update(User $user, ShoppingListItem $item)
     {
-        return $item->user()->id === $user->id;
+        return $item->user->id === $user->id
+            ? Response::allow()
+            : Response::deny(trans('responses.error.item.owner'));
     }
 
     /**
@@ -54,6 +48,8 @@ class ShoppingListItemPolicy
      */
     public function delete(User $user, ShoppingListItem $item)
     {
-        return $item->user()->id === $user->id;
+        return $item->user->id === $user->id
+            ? Response::allow()
+            : Response::deny(trans('responses.error.item.owner'));
     }
 }
