@@ -36,7 +36,7 @@ class ShoppingListPolicy
     {
         return $user->id === $list->owner->first()->id
             ? Response::allow()
-            : Response::deny(trans('responses.error.list.owner'));
+            : (Response::deny(trans('responses.error.list.owner')))->authorize();
     }
 
     /**

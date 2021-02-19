@@ -16,7 +16,7 @@ return [
     'failed' => 'These credentials do not match our records.',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-    'unauthorized' => 'You are not authorized to do this.',
+    'unauthorized' => 'Wrong email or password',
     'logout' => 'Successfully logged out',
     'unauthenticated' => 'You have to be logged in to access this content.'
 ];
