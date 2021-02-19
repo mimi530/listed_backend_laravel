@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\ShoppingList\Item;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -47,9 +48,9 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(ShoppingList::class)->withPivot('owner');
     }
 
-    public function shoppingListItems()
+    public function items()
     {
-        return $this->hasMany(ShoppingListItem::class);
+        return $this->hasMany(Item::class);
     }
 
     public function getJWTIdentifier()

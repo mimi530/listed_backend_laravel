@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\ShoppingList;
-use App\Models\ShoppingListItem;
+use App\Models\ShoppingList\Item;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
@@ -29,10 +29,10 @@ class ShoppingListItemPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ShoppingListItem  $item
+     * @param  \App\Models\Item $item
      * @return mixed
      */
-    public function update(User $user, ShoppingListItem $item)
+    public function update(User $user, Item $item)
     {
         return $item->user->id === $user->id
             ? Response::allow()
@@ -43,10 +43,10 @@ class ShoppingListItemPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ShoppingListItem  $item
+     * @param  \App\Models\Item $item
      * @return mixed
      */
-    public function delete(User $user, ShoppingListItem $item)
+    public function delete(User $user, Item $item)
     {
         return $item->user->id === $user->id
             ? Response::allow()

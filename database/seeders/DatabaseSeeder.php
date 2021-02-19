@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\ShoppingList;
-use App\Models\ShoppingListItem;
+use App\Models\ShoppingList\Item;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -23,10 +23,10 @@ class DatabaseSeeder extends Seeder
         foreach($users as $user) {
             $lists = ShoppingList::factory()->count(2)->create();
             foreach($lists as $list) {
-                $user->shoppingLists()->attach($list);
-                $items = ShoppingListItem::factory()->count(3)->make();
+                $user->shoppingLists()->attach($list, ['owner' => true]);
+                $items = Item::factory()->count(3)->make();
                 foreach($items as $item) {
-                    $list->shoppingListItems()->create(
+                    $list->items()->create(
                         array_merge(
                             $item->toArray(), 
                             ['user_id'=>$user->id]

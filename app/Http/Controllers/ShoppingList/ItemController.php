@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ShoppingList;
 
 use App\Http\Requests\ShoppingList\ShoppingListUpdateRequest;
 use App\Http\Requests\ShoppingListItem\ShoppingListItemStoreRequest;
 use App\Models\ShoppingList;
-use App\Models\ShoppingListItem;
+use App\Models\ShoppingList\Item;
 
-class ShoppingListItemController extends Controller
+class ItemController extends Controller
 {
     /**
      * Store a newly created resource in storage.
@@ -17,7 +17,7 @@ class ShoppingListItemController extends Controller
      */
     public function store(ShoppingListItemStoreRequest $request, ShoppingList $list)
     {
-        $list->shoppingListItems()->create(
+        $list->items()->create(
             array_merge(
                 ['user_id' => auth()->user()->id],
                 $request->validated()
@@ -32,10 +32,10 @@ class ShoppingListItemController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ShoppingListItem  $item
+     * @param  \App\Models\Item $item
      * @return \Illuminate\Http\Response
      */
-    public function update(ShoppingListUpdateRequest $request, ShoppingList $list, ShoppingListItem $item)
+    public function update(ShoppingListUpdateRequest $request, ShoppingList $list, Item $item)
     {
         $item->update($request->validated());
         return response()->json([
@@ -46,10 +46,10 @@ class ShoppingListItemController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ShoppingListItem  $item
+     * @param  \App\Models\Item $item
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ShoppingList $list, ShoppingListItem $item)
+    public function destroy(ShoppingList $list, Item $item)
     {
         $this->authorize('delete', $item);
         $item->delete();

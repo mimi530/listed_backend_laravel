@@ -14,10 +14,18 @@ class ShoppingListResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $resource =  [
             'id' => $this->id,
             'name' => $this->name,
-            'owner' => $this->pivot->owner
+            'users' => UserResource::collection($this->users)
         ];
+        if ($this->items_count) {
+            $resource['items_count'] = $this->items_count;
+        }
+        if ($this->items_bought_count) {
+            $resource['items_bought_count'] = $this->items_bought_count;
+        }
+        return $resource;
+
     }
 }

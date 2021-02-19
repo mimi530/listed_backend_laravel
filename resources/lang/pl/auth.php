@@ -16,5 +16,7 @@ return [
     'failed' => 'Nieprawidłowy email lub hasło',
     'password' => 'Błędne hasło',
     'throttle' => 'Zbyt wiele prób logowania. Spróbuj ponownie za :seconds sekund.',
-
-];
+    'unauthorized' => 'Brak uprawnień.',
+    'logout' => 'Wylogowano.',
+    'unauthenticated' => 'Zaloguj się aby zobaczyć zawartość.'
+]; 

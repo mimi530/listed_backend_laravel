@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ShoppingList\ShoppingListStoreRequest;
 use App\Http\Requests\ShoppingList\ShoppingListUpdateRequest;
+use App\Http\Resources\ShoppingListResource;
 use App\Models\ShoppingList;
 use App\Models\User;
 
@@ -17,11 +18,11 @@ class ShoppingListController extends Controller
     public function index()
     {
         $lists =  auth()->user()->shoppingLists();
-        return response()->json(
-            $lists
-            ->withCount('shoppingListItems')
-            ->withCount('itemsBought')
-            ->get()
+
+        return ShoppingListResource::collection(
+            $lists->withCount(['items', 'items as items_bought_count' => function ($query) {
+                $query->where('bought', true);
+            }])->get()
         );
     }
 
@@ -49,9 +50,9 @@ class ShoppingListController extends Controller
     {;
         $this->authorize('view', $list);
         return response()->json([
-            'users_count' => $list->usersCount(),
-            'list' => $list->load('users:id,name'),
-            'items' => $list->shoppingListItems()->with('user:id,name')->get()
+            'users_count' => $list->users()->count(),
+            'list' => new ShoppingListResource($list->load('users')),
+            'items' => $list->items()->with('user:id,name')->get()
         ]);
     }
 

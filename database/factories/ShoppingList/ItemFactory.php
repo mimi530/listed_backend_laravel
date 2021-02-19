@@ -1,20 +1,18 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\ShoppingList;
 
-use App\Models\ShoppingList;
-use App\Models\ShoppingListItem;
-use App\Models\User;
+use App\Models\ShoppingList\Item;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ShoppingListItemFactory extends Factory
+class ItemFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = ShoppingListItem::class;
+    protected $model = Item::class;
 
     /**
      * Define the model's default state.

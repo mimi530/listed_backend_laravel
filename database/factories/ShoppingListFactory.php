@@ -3,8 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\ShoppingList;
-use App\Models\ShoppingListItem;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ShoppingListFactory extends Factory
