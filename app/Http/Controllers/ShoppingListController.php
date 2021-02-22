@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ShoppingList\ShoppingListStoreRequest;
 use App\Http\Requests\ShoppingList\ShoppingListUpdateRequest;
+use App\Http\Resources\ShoppingList\ItemResource;
 use App\Http\Resources\ShoppingListResource;
 use App\Models\ShoppingList;
 use App\Models\User;
@@ -52,7 +53,7 @@ class ShoppingListController extends Controller
         return response()->json([
             'users_count' => $list->users()->count(),
             'list' => new ShoppingListResource($list->load('users')),
-            'items' => $list->items()->with('user:id,name')->get()
+            'items' => ItemResource::collection($list->items)
         ]);
     }
 
@@ -72,10 +73,16 @@ class ShoppingListController extends Controller
             ], 200);
         } else { //update by attaching new user to the list
             $user = User::where('email', $request->email)->firstOrfail();
-            $user->shoppingLists()->sync($list);
-            return response()->json([
-                'message' => trans('responses.ok.list.user_added')
-            ], 200);
+            if(!$list->users->contains($user)) { //adding new user
+                $user->shoppingLists()->attach($list);
+                return response()->json([
+                    'message' => trans('responses.ok.list.user_added')
+                ], 200);
+            } else { //user already exists
+                return response()->json([
+                    'message' => trans('responses.error.list.user_exists')
+                ], 409);
+            }
         }
     }
 

@@ -18,7 +18,8 @@ return [
     'error' => [
         'list' => [
             'owner' => 'You are not the owner of this list!',
-            'belong' => 'You do not belong to that list!'
+            'belong' => 'You do not belong to that list!',
+            'user_exists' => 'This user is already on the list'
         ],
         'item' => [
             'owner' => 'You are not the owner of this item!',

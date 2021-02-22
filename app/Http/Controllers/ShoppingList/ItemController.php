@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\ShoppingList;
 
 use App\Http\Requests\ShoppingList\ShoppingListUpdateRequest;
-use App\Http\Requests\ShoppingListItem\ShoppingListItemStoreRequest;
+use App\Http\Requests\ShoppingList\Item\ItemStoreRequest;
 use App\Models\ShoppingList;
 use App\Models\ShoppingList\Item;
 
@@ -15,7 +15,7 @@ class ItemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ShoppingListItemStoreRequest $request, ShoppingList $list)
+    public function store(ItemStoreRequest $request, ShoppingList $list)
     {
         $list->items()->create(
             array_merge(

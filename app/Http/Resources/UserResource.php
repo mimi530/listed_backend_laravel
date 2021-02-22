@@ -14,10 +14,13 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $resource = [
             'id' => $this->id,
             'name' => $this->name,
-            'owner' => $this->pivot->owner
         ];
+        if($this->pivot) {
+            $resource['owner'] = $this->pivot->owner;
+        }
+        return $resource;
     }
 }

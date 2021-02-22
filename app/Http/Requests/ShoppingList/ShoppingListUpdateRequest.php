@@ -31,7 +31,7 @@ class ShoppingListUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required_without:email',
-            'email' => 'email'
+            'email' => 'email|'
         ];
     }
 }

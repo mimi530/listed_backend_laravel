@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\ShoppingList;
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ShoppingListItemResource extends JsonResource
+class ItemResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,7 +20,7 @@ class ShoppingListItemResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'bought' => $this->bought,
-            'user' => UserResource::collection($this->whenLoaded('user'))
+            'user' => new UserResource($this->user)
         ];
     }
 }
