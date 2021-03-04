@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\ShoppingList;
 
-use App\Http\Requests\ShoppingList\ShoppingListUpdateRequest;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ShoppingList\Item\ItemStoreRequest;
+use App\Http\Requests\ShoppingList\Item\ItemUpdateRequest;
+use App\Http\Resources\ShoppingList\ItemResource;
 use App\Models\ShoppingList;
 use App\Models\ShoppingList\Item;
 
@@ -17,13 +19,15 @@ class ItemController extends Controller
      */
     public function store(ItemStoreRequest $request, ShoppingList $list)
     {
-        $list->items()->create(
+        $this->authorize('create', [Item::class, $list]);
+        $item = $list->items()->create(
             array_merge(
                 ['user_id' => auth()->user()->id],
                 $request->validated()
             )
         );
         return response()->json([
+            'item' => $item,
             'message' => trans('responses.ok.item.saved')
         ], 201);
     }
@@ -35,10 +39,12 @@ class ItemController extends Controller
      * @param  \App\Models\Item $item
      * @return \Illuminate\Http\Response
      */
-    public function update(ShoppingListUpdateRequest $request, ShoppingList $list, Item $item)
+    public function update(ItemUpdateRequest $request, ShoppingList $list, Item $item)
     {
+        $this->authorize('update', $item);
         $item->update($request->validated());
         return response()->json([
+            'item' => new ItemResource($item),
             'message' => trans('responses.ok.item.updated')
         ], 200);
     }

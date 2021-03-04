@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\ShoppingList\Item;
 
-use App\Models\ShoppingList\Item;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ItemStoreRequest extends FormRequest
@@ -14,7 +13,7 @@ class ItemStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('create', [Item::class, $this->route('list')]);
+        return true;
     }
 
     /**

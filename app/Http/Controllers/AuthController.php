@@ -4,6 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Contracts\Providers\Auth as ProvidersAuth;
 
 class AuthController extends Controller
 {
@@ -14,7 +20,26 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['login']]);
+        $this->middleware('auth', ['except' => ['login', 'register']]);
+    }
+
+    /**
+     * Register user to the database.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function register(Request $request)
+    {
+        $input = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed'
+        ]);
+        return User::create([
+            'name' => $input['name'],
+            'email' => $input['email'],
+            'password' => Hash::make($input['password']),
+        ]);
     }
 
     /**
@@ -39,7 +64,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        return response()->json(new UserResource(auth()->user()));
     }
 
     /**
@@ -49,9 +74,10 @@ class AuthController extends Controller
      */
     public function logout()
     {
+        $cookie = Cookie::forget('token');
         auth()->logout();
 
-        return response()->json(['message' => trans('auth.logout')]);
+        return response()->json(['message' => trans('auth.logout')])->withCookie($cookie);
     }
 
     /**
@@ -73,10 +99,13 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 300
-        ]);
+        $cookie = cookie(
+            'token', 
+            $token, 
+            auth()->factory()->getTTL()
+        );
+        return response([
+            new UserResource(auth()->user())
+        ])->withCookie($cookie);
     }
 }

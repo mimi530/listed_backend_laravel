@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\ShoppingListItem;
+namespace App\Http\Requests\ShoppingList\Item;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -13,7 +13,7 @@ class ItemUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('update', [Item::class, $this->route('list')]);
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class ItemUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
+            'name' => 'required_without:bought',
             'description' => '',
             'bought' => 'boolean',
         ];

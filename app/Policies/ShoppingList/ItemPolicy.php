@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies;
+namespace App\Policies\ShoppingList;
 
 use App\Models\ShoppingList;
 use App\Models\ShoppingList\Item;

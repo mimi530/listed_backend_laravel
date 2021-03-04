@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\ShoppingList;
 
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ShoppingListUpdateRequest extends FormRequest
@@ -14,12 +13,7 @@ class ShoppingListUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('update', $this->list);
-    }
-
-    public function failedAuthorization()
-    {
-        //
+        return true;
     }
 
     /**
@@ -31,7 +25,7 @@ class ShoppingListUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required_without:email',
-            'email' => 'email|'
+            'email' => 'string|email',
         ];
     }
 }

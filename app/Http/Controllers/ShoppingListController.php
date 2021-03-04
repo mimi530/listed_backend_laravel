@@ -23,7 +23,7 @@ class ShoppingListController extends Controller
         return ShoppingListResource::collection(
             $lists->withCount(['items', 'items as items_bought_count' => function ($query) {
                 $query->where('bought', true);
-            }])->get()
+            }])->latest()->get()
         );
     }
 
@@ -35,8 +35,9 @@ class ShoppingListController extends Controller
      */
     public function store(ShoppingListStoreRequest $request)
     {
-        auth()->user()->shoppingLists()->create( $request->validated(), ['owner' => true] );
+        $list = auth()->user()->shoppingLists()->create( $request->validated(), ['owner' => true] );
         return response()->json([
+            'list' => new ShoppingListResource($list),
             'message' => trans('responses.ok.list.saved')
         ], 201);
     }
@@ -53,7 +54,7 @@ class ShoppingListController extends Controller
         return response()->json([
             'users_count' => $list->users()->count(),
             'list' => new ShoppingListResource($list->load('users')),
-            'items' => ItemResource::collection($list->items)
+            'items' => ItemResource::collection($list->items()->orderBy('bought')->orderBy('created_at', 'desc')->get())
         ]);
     }
 
@@ -66,6 +67,7 @@ class ShoppingListController extends Controller
      */
     public function update(ShoppingListUpdateRequest $request, ShoppingList $list)
     {
+        $this->authorize('update', $list);
         if(!$request->email) { //updating only the name value on the list
             $list->update($request->validated());
             return response()->json([
