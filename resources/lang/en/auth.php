@@ -18,5 +18,7 @@ return [
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'unauthorized' => 'Wrong email or password',
     'logout' => 'Successfully logged out',
-    'unauthenticated' => 'You have to be logged in to access this content.'
+    'unauthenticated' => 'You have to be logged in to access this content.',
+    'user_saved' => 'Sign up successful',
+    'user_loggedin' => 'Sign in successful'
 ];

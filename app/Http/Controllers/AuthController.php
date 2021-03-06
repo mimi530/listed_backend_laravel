@@ -35,11 +35,15 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed'
         ]);
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
         ]);
+        return response()->json([
+            'message' => trans('auth.user_saved'),
+            'user' => new UserResource($user)
+        ], 201);
     }
 
     /**
@@ -64,7 +68,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(new UserResource(auth()->user()));
+        return response()->json(['name' => auth()->user()->name]);
     }
 
     /**
@@ -105,7 +109,8 @@ class AuthController extends Controller
             auth()->factory()->getTTL()
         );
         return response([
-            new UserResource(auth()->user())
-        ])->withCookie($cookie);
+            'message' => trans('auth.user_loggedin'),
+            'user' => new UserResource(auth()->user())
+        ], 200)->withCookie($cookie);
     }
 }

@@ -68,7 +68,7 @@ class ShoppingListController extends Controller
     public function update(ShoppingListUpdateRequest $request, ShoppingList $list)
     {
         $this->authorize('update', $list);
-        if(!$request->email) { //updating only the name value on the list
+        if(!$request->has('email')) { //updating only the name value on the list
             $list->update($request->validated());
             return response()->json([
                 'message' => trans('responses.ok.list.updated')

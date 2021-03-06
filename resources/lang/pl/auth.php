@@ -18,5 +18,7 @@ return [
     'throttle' => 'Zbyt wiele prób logowania. Spróbuj ponownie za :seconds sekund.',
     'unauthorized' => 'Nieprawidłowy login lub hasło!',
     'logout' => 'Wylogowano.',
-    'unauthenticated' => 'Zaloguj się aby zobaczyć zawartość.'
+    'unauthenticated' => 'Zaloguj się aby zobaczyć zawartość.',
+    'user_saved' => 'Rejestrcja udana',
+    'user_loggedin' => 'Zalogowano'
 ]; 

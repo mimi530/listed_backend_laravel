@@ -16,7 +16,7 @@ class CreateShoppingListItemsTable extends Migration
         Schema::create('shopping_list_items', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('shopping_list_id')->constrained();
+            $table->foreignId('shopping_list_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained();
             $table->string('description')->nullable();
             $table->boolean('bought')->default(false);
