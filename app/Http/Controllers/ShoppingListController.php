@@ -96,9 +96,9 @@ class ShoppingListController extends Controller
      */
     public function destroy(ShoppingList $list)
     {
-        $this->authorize('delete', $list);
         $user = auth()->user();
         if($list->owner->first()->id = $user->id) { //owner deletes the list
+            $this->authorize('delete', $list);
             $list->delete();
             return response()->json([
                 'message' => trans('responses.ok.list.deleted')
