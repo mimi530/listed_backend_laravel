@@ -3,9 +3,9 @@ FROM php:8.0-apache
 RUN apt-get update && apt-get install -y \
       libicu-dev \
       libpq-dev \
+      libzip-dev \
       libmcrypt-dev \
       libonig-dev \
-      libzip \
       git \
       zip \
       unzip

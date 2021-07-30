@@ -11,6 +11,7 @@ services:
             - mysql
         environment: 
             VIRTUAL_HOST: api.listed.mdomzalski.pl,www.api.listed.mdomzalski.pl
+            LETSENCRYPT_HOST: api.listed.mdomzalski.pl,www.api.listed.mdomzalski.pl
     mysql:
         image: 'mysql:8.0'
         ports:
