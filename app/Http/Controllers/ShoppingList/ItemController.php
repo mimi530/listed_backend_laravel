@@ -41,14 +41,12 @@ class ItemController extends Controller
      */
     public function update(ItemUpdateRequest $request, ShoppingList $list, Item $item)
     {
-        \Log::debug($request->has('bought'));
         if(!$request->has('bought')) {
             $this->authorize('update', $item);
             $item->update($request->validated());
         } else {
             $item->update(['bought' => $request->bought]);
         }
-        \Log::debug($item);
         return response()->json([
             'item' => new ItemResource($item),
             'message' => trans('responses.ok.item.updated')
