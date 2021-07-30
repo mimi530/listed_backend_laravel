@@ -9,6 +9,8 @@ services:
             - "8000:80"
         depends_on:
             - mysql
+        environment: 
+            VIRTUAL_HOST: api.listed.mdomzalski.pl,www.api.listed.mdomzalski.pl
     mysql:
         image: 'mysql:8.0'
         ports:
@@ -20,12 +22,6 @@ services:
             MYSQL_PASSWORD: '${DB_PASSWORD}'
         volumes:
             - 'db_data:/var/lib/mysql'
-    httpd:
-        build:
-            context: ./
-            dockerfile: Dockerfile.httpd
-        environment: 
-            VIRTUAL_HOST: api.listed.mdomzalski.pl,www.api.listed.mdomzalski.pl
 
 volumes:
     db_data:
