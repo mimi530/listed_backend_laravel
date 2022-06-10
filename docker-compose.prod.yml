@@ -12,6 +12,7 @@ services:
         environment: 
             VIRTUAL_HOST: api.listed.mdomzalski.pl,www.api.listed.mdomzalski.pl
             LETSENCRYPT_HOST: api.listed.mdomzalski.pl,www.api.listed.mdomzalski.pl
+        restart: always
     mysql:
         image: 'mysql:8.0'
         ports:
@@ -23,7 +24,7 @@ services:
             MYSQL_PASSWORD: '${DB_PASSWORD}'
         volumes:
             - 'db_data:/var/lib/mysql'
-
+        restart: always
 volumes:
     db_data:
 

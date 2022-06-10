@@ -49,7 +49,7 @@ class ShoppingListController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(ShoppingList $list)
-    {;
+    {
         $this->authorize('view', $list);
         return response()->json([
             'users_count' => $list->users()->count(),
