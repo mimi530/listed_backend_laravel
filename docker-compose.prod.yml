@@ -13,8 +13,12 @@ services:
             VIRTUAL_HOST: api.listed.mdomzalski.pl,www.api.listed.mdomzalski.pl
             LETSENCRYPT_HOST: api.listed.mdomzalski.pl,www.api.listed.mdomzalski.pl
         restart: always
+        networks:
+            - listed
     mysql:
         image: 'mysql:8.0'
+        expose:
+            - "3306"
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
             MYSQL_DATABASE: '${DB_DATABASE}'
@@ -23,10 +27,14 @@ services:
         volumes:
             - 'db_data:/var/lib/mysql'
         restart: always
+        networks:
+            - listed
 volumes:
     db_data:
 
 networks:
+    listed:
+        driver: bridge
     default:
         external:
             name: nginx-proxy
