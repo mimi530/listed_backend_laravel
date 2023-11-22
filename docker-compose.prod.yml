@@ -1,34 +1,28 @@
-# For more information: https://laravel.com/docs/sail
 version: '3'
 services:
-    listed_api:
-        build:
-            context: ./
-            dockerfile: Dockerfile.prod
-        expose:
-            - "80"
-        depends_on:
-            - listed_db
-        environment: 
-            VIRTUAL_HOST: api.listed.mdomzalski.pl,www.api.listed.mdomzalski.pl
-            LETSENCRYPT_HOST: api.listed.mdomzalski.pl,www.api.listed.mdomzalski.pl
-        restart: always
-    listed_db:
-        image: 'mysql:8.0'
-        expose:
-            - "3306"
-        environment:
-            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_DATABASE: '${DB_DATABASE}'
-            MYSQL_USER: '${DB_USERNAME}'
-            MYSQL_PASSWORD: '${DB_PASSWORD}'
-        volumes:
-            - 'db_data:/var/lib/mysql'
-        restart: always
-volumes:
-    db_data:
+  api_listed:
+    build:
+      context: ./
+      dockerfile: Dockerfile.prod
+    expose:
+      - 80
+    restart: always
+    container_name: api.listed.mdomzalski.pl
+    volumes:
+      - /vendor
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api-listed.rule=Host(`api.listed.mdomzalski.pl`,`www.api.listed.mdomzalski.pl`)"
+      - "traefik.http.routers.api-listed.entrypoints=websecure"
+      - "traefik.http.routers.api-listed.tls.certresolver=production"
+      - "traefik.http.routers.api-listed-https.tls=true"
+      - "traefik.http.routers.api-listed-https.rule=Host(`api.listed.mdomzalski.pl`,`www.api.listed.mdomzalski.pl`)"
+      - "traefik.http.routers.api-listed-https.entrypoints=websecure"
+      - "traefik.http.routers.api-listed-https.service=api-listed"
+      - "traefik.http.services.api-listed.loadbalancer.server.port=80"
 
 networks:
-    default:
-        external:
-            name: nginx-proxy
+  default:
+    name: traefik
+    external: true
+
